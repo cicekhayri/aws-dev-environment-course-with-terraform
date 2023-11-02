@@ -1,5 +1,4 @@
 terraform {
-#   required_version = ">= 0.12"
   required_version = ">= 1.6.2"
   required_providers {
     aws = {
@@ -61,4 +60,9 @@ resource "aws_sqs_queue" "dlq_queue" {
   name = "my-dlq-queue"
   delay_seconds = 30
   max_message_size = 262144
+}
+
+resource "aws_lambda_event_source_mapping" "sqs-lambda-trigger" {
+  event_source_arn = aws_sqs_queue.main_queue.arn
+  function_name = aws_lambda_function.mypython_lambda.arn
 }
